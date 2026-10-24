@@ -1,0 +1,447 @@
+@import 'tailwindcss';
+
+/* Палитра и шрифты — единый источник правды. Меняйте цвета здесь. */
+@theme {
+  --color-cream: #fbf8f1;
+  --color-mint: #eaf6ee;
+  --color-leaf: #3fa66b;
+  --color-leaf-deep: #2b7a4c;
+  --color-lime: #b7e26b;
+  --color-emerald: #14382b;
+  --color-emerald-soft: #3d5a4e;
+  --color-grape: #7b3fa0;
+  --color-grape-deep: #4e1f6e;
+  --color-lilac: #c9a7e8;
+  --color-berry: #e86a92;
+  --color-berry-deep: #b8336a;
+  --color-sun: #ffc978;
+  --color-peach: #ffe3c4;
+
+  --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-sans: 'Manrope Variable', 'Segoe UI', system-ui, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+:root {
+  /* Переменные времени года (перезаписываются скроллом в секции «Год лозы») */
+  --season-petal: #f4a6c0;
+
+  --glass-bg: rgba(255, 255, 255, 0.56);
+  --glass-bg-strong: rgba(255, 255, 255, 0.74);
+  --glass-border: rgba(255, 255, 255, 0.78);
+  --glass-shadow: 0 18px 50px -18px rgba(78, 31, 110, 0.22), 0 6px 18px -8px rgba(63, 166, 107, 0.18);
+
+  --gradient-dawn: linear-gradient(120deg, #eaf6ee 0%, #e6f6c8 32%, #ffe3c4 64%, #ecdcf8 100%);
+  --gradient-grape: linear-gradient(120deg, #7b3fa0 0%, #b8336a 100%);
+  --nav-h: 72px;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scrollbar-gutter: stable;
+  }
+
+  html,
+  body {
+    background: var(--color-cream);
+    color: var(--color-emerald);
+    overflow-x: clip;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-feature-settings: 'ss01', 'cv01';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100svh;
+  }
+
+  ::selection {
+    background: var(--color-lilac);
+    color: var(--color-emerald);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-grape);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+  }
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+@layer components {
+  .glass {
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    backdrop-filter: blur(18px) saturate(1.4);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+
+  .glass-strong {
+    background: var(--glass-bg-strong);
+    -webkit-backdrop-filter: blur(22px) saturate(1.5);
+    backdrop-filter: blur(22px) saturate(1.5);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  }
+
+  .text-gradient-grape {
+    background: var(--gradient-grape);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-leaf-deep);
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.6rem, 6vw, 5.6rem);
+    font-weight: 500;
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+  }
+
+  .lead {
+    font-size: clamp(1rem, 1.25vw, 1.2rem);
+    line-height: 1.65;
+    color: var(--color-emerald-soft);
+  }
+
+  /* Подчёркивание, которое «рисуется» при наведении */
+  .draw-link {
+    position: relative;
+    display: inline-block;
+  }
+  .draw-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -3px;
+    height: 1.5px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.5s var(--ease-out-expo);
+  }
+  .draw-link:hover::after,
+  .draw-link:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  /* Мягкая кремовая подложка: текст читается поверх 3D-листвы, но без «плашки» */
+  .veil {
+    position: relative;
+    isolation: isolate;
+  }
+  .veil::before {
+    content: '';
+    position: absolute;
+    inset: -14% -12%;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(
+      closest-side,
+      rgba(251, 248, 241, 0.86) 0%,
+      rgba(251, 248, 241, 0.62) 55%,
+      rgba(251, 248, 241, 0) 100%
+    );
+    filter: blur(6px);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 999px;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(20, 56, 43, 0.08);
+    color: var(--color-emerald);
+  }
+}
+
+/* Маска для построчного/пословного появления */
+.reveal-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.reveal-inner {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* Бегущая строка */
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+.marquee-track {
+  animation: marquee var(--marquee-duration, 60s) linear infinite;
+}
+.marquee-track[data-direction='reverse'] {
+  animation-direction: reverse;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Живое градиентное свечение карточки «Гроздь» */
+@property --glow-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes glow-spin {
+  to {
+    --glow-angle: 360deg;
+  }
+}
+.glow-border {
+  position: relative;
+  isolation: isolate;
+}
+.glow-border::before,
+.glow-border::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--glow-angle),
+    #b7e26b,
+    #3fa66b,
+    #ffc978,
+    #e86a92,
+    #c9a7e8,
+    #7b3fa0,
+    #b7e26b
+  );
+  animation: glow-spin 6s linear infinite;
+  z-index: -1;
+}
+.glow-border::after {
+  inset: 6px;
+  filter: blur(34px);
+  opacity: 0.75;
+  z-index: -2;
+}
+
+/* Падающие лепестки */
+@keyframes petal-fall {
+  0% {
+    transform: translate3d(0, -12vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(var(--petal-drift, 60px), 112vh, 0) rotate(var(--petal-rot, 540deg));
+    opacity: 0;
+  }
+}
+@keyframes petal-sway {
+  0%,
+  100% {
+    margin-left: -18px;
+  }
+  50% {
+    margin-left: 18px;
+  }
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-100%);
+  }
+  60%,
+  100% {
+    transform: translateY(220%);
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(63, 166, 107, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 7px rgba(63, 166, 107, 0);
+  }
+}
+
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(2deg);
+  }
+}
+
+@keyframes fallback-rays {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: rotate(-24deg) scaleX(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: rotate(-21deg) scaleX(1.08);
+  }
+}
+
+/* Кастомный курсор */
+.cursor-ring,
+.cursor-dot {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.cursor-ring__circle {
+  position: absolute;
+  left: -20px;
+  top: -20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(20, 56, 43, 0.55);
+  background: rgba(255, 255, 255, 0.06);
+  transition:
+    transform 0.45s var(--ease-out-expo),
+    background-color 0.35s ease,
+    border-color 0.35s ease;
+}
+.cursor-ring__label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%) scale(0.4);
+  font-size: 22px;
+  font-weight: 600;
+  color: #fff;
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    transform 0.45s var(--ease-out-expo);
+}
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 999px;
+  background: var(--color-grape);
+  transition:
+    opacity 0.3s ease,
+    width 0.3s ease,
+    height 0.3s ease;
+}
+.cursor-ring[data-state='link'] .cursor-ring__circle {
+  transform: scale(1.7);
+  background: rgba(201, 167, 232, 0.25);
+  border-color: rgba(123, 63, 160, 0.5);
+}
+.cursor-ring[data-state='card'] .cursor-ring__circle {
+  transform: scale(2.2);
+  background: rgba(123, 63, 160, 0.88);
+  border-color: transparent;
+}
+.cursor-ring[data-state='card'] .cursor-ring__label {
+  opacity: 1;
+  transform: translate(-50%, -54%) scale(1);
+}
+.cursor-ring[data-state='text'] .cursor-ring__circle {
+  transform: scaleX(0.08) scaleY(0.7);
+  background: var(--color-grape);
+}
+.cursor-dot[data-state='card'],
+.cursor-dot[data-state='text'] {
+  opacity: 0 !important;
+}
+.cursor-ring.is-pressed .cursor-ring__circle {
+  transform: scale(0.8);
+}
+
+/* Системный курсор прячем, только когда активен наш */
+html.has-custom-cursor,
+html.has-custom-cursor a,
+html.has-custom-cursor button,
+html.has-custom-cursor [role='button'],
+html.has-custom-cursor label {
+  cursor: none;
+}
+html.has-custom-cursor input,
+html.has-custom-cursor textarea {
+  cursor: text;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .marquee-track {
+    animation: none !important;
+  }
+}
